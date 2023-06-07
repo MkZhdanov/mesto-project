@@ -1,0 +1,13 @@
+.popup__main-container {
+  margin-top: 43px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 89px;
+}
+
+@media screen and (max-width: 620px) {
+  .popup__main-container {
+    margin-top: 70px;
+  }
+}
