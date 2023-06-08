@@ -3,13 +3,14 @@
   height: 50px;
   margin: 0 0 0 auto;
   padding: 0;
-  background-color: #000;
+  background-color: transparent;
   cursor: pointer;
   border: 2px solid white;
   background-image: url(../../../images/add.svg);
   background-size: 22px;
   background-repeat: no-repeat;
   background-position: center;
+  border-radius: 2px;
 }
 
 .profile__add:hover {

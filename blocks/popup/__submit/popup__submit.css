@@ -6,10 +6,11 @@
   color: white;
   border: none;
   cursor: pointer;
-  margin-top: auto;
+  margin-top: 48px;
   font-weight: 400;
   font-size: 18px;
   line-height: 1.21;
+  border-radius: 2px;
 }
 
 .popup__submit:hover {
@@ -21,6 +22,7 @@
     width: 238px;
     height: 46px;
     font-size: 14px;
+    margin-top: 45px;
   }
 
 }
