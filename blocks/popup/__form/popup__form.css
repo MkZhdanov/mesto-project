@@ -2,4 +2,18 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  width: 430px;
+  padding: 34px 36px 37px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  background-color: white;
+}
+
+@media screen and (max-width: 620px) {
+  .popup__form {
+    width: 282px;
+    padding: 25px 22px;
+  }
 }
