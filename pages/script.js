@@ -30,8 +30,8 @@ const profileEditButton = document.querySelector('.profile__edit');
 const popupEditProfile = document.querySelector('.popup_type_edit-profile');
 const addCardButton = document.querySelector('.profile__add-card');
 const popupLocationAdd = document.querySelector('.popup_type_add-card');
-const popupCloseButton = document.querySelectorAll('.popup__close');
-const popupWindow = document.querySelectorAll('.popup');
+const closeButtons = document.querySelectorAll('.popup__close');
+const popups = document.querySelectorAll('.popup');
 const popupImage = document.querySelector('.popup_type_image');
 const inputName = document.querySelector('.popup__item_type_name');
 const inputBio = document.querySelector('.popup__item_type_bio');
@@ -40,6 +40,10 @@ const profileBio = document.querySelector('.profile__bio');
 const formElementProfile = document.querySelector('.popup__form-profile');
 const cardsContainer = document.querySelector('.elements');
 const formElementCard = document.querySelector('.popup__form-card');
+const title = document.querySelector('.popup__item_type_location');
+const img = document.querySelector('.popup__item_type_link');
+const imgBig = document.querySelector('.image-popup__image');
+const imgBigCaption = document.querySelector('.image-popup__title');
 
 // функция, которая открывает popup
 function openPopup (popupElement) {
@@ -47,14 +51,18 @@ function openPopup (popupElement) {
 }
 
 // функция, которая закрывает все popup на странице
-function closePopup () {
-  popupWindow.forEach((item) => {
-    item.classList.remove('popup_opened');
-  });
+function closeAllPopups () {
+  popups.forEach(closePopup);
 }
 
+
+function closePopup(popup) {
+  popup.classList.remove('popup_opened');
+}
+
+
 // Функция, которая сохраняет значения инпутов попапа "Редактировать профиль" в профайл на странице и закрывает попап
-function handleFormSubmit(evt) {
+function handleProfileFormSubmit(evt) {
   evt.preventDefault(); // Предотвращает событие по умолчанию (перезагрузку страницы)
   profileName.textContent = inputName.value;
   profileBio.textContent = inputBio.value;
@@ -64,35 +72,42 @@ function handleFormSubmit(evt) {
 // Функция, которая создает карточку на странице со значениями инпутов формы "Новое место" закрывает попап и очишает значения инпутов
 function handleFormSubmitCard(evt) {
   evt.preventDefault(); // Предотвращает событие по умолчанию (перезагрузку страницы)
-  const title = document.querySelector('.popup__item_type_location');
-  const img = document.querySelector('.popup__item_type_link');
   addCard(title.value, img.value);
   closePopup(popupLocationAdd)
-  title.value = '';
-  img.value = '';
+  evt.target.reset()
 }
 
-// Функция, которая делает все
-function addCard(titleValue, imgValue) {
-  const cardTemplate = document.querySelector('#card-template').content;
-  const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
+// Функция, которая создает карточку
+function createCard(titleValue, imgValue) {
+    // тут создаете карточку и возвращаете ее
+    const cardTemplate = document.querySelector('#card-template').content;
+    const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
+    const cardImage = cardElement.querySelector('.card__img')
 
-  cardElement.querySelector('.card__title').textContent = titleValue;
-  cardElement.querySelector('.card__img').setAttribute('src', imgValue);
-  // Добавляет/Удаляет лайки
-  cardElement.querySelector('.card__like').addEventListener('click', function (evt) {
-    evt.target.classList.toggle('card__like_active');
-  });
-  // Удаляет карточку
-  cardElement.querySelector('.card__delete').addEventListener('click', function (){
-    cardElement.remove();
-  });
-  // Открывает попап с изображением и подписью
-  cardElement.querySelector('.card__img').addEventListener('click', function () {
-    openPopup(popupImage);
-    document.querySelector('.image-popup__image').setAttribute('src', imgValue);
-    document.querySelector('.image-popup__title').textContent = titleValue;
-  });
+    cardElement.querySelector('.card__title').textContent = titleValue;
+    cardImage.setAttribute('src', imgValue);
+    cardImage.setAttribute('alt', titleValue);
+    // Добавляет/Удаляет лайки
+    cardElement.querySelector('.card__like').addEventListener('click', function (evt) {
+      evt.target.classList.toggle('card__like_active');
+    });
+    // Удаляет карточку
+    cardElement.querySelector('.card__delete').addEventListener('click', function (){
+      cardElement.remove();
+    });
+    // Открывает попап с изображением и подписью
+    cardImage.addEventListener('click', function () {
+      openPopup(popupImage);
+      imgBig.setAttribute('src', imgValue);
+      imgBig.setAttribute('alt', titleValue);
+      imgBigCaption.textContent = titleValue;
+    });
+  return cardElement
+}
+
+// Функция, которая добавляет карточку
+function addCard(titleValue, imgValue) {
+  const cardElement = createCard(titleValue, imgValue);
   // Добавляет элемент в начало контейнера
   cardsContainer.prepend(cardElement);
 }
@@ -110,12 +125,13 @@ addCardButton.addEventListener('click', function () {
 });
 
 // Закрывает любую форму
-popupCloseButton.forEach((item) => {
-  item.addEventListener('click', closePopup);
+closeButtons.forEach((button) => {
+  const popup = button.closest('.popup');
+  button.addEventListener('click', () => closePopup(popup));
 })
 
 // Слушатель кнопки "Сохранить" в форме "Редактировать профиль"
-formElementProfile.addEventListener('submit', handleFormSubmit);
+formElementProfile.addEventListener('submit', handleProfileFormSubmit);
 
 // Слушатель кнопки "Создать" в форме "Новое место"
 formElementCard.addEventListener('submit', handleFormSubmitCard);
