@@ -8,18 +8,26 @@ export {
   closePopup,
   handleProfileFormSubmit,
 };
+import { hideInputError } from "./validate.js";
 
 const popupEditProfile = document.querySelector(".popup_type_edit-profile");
-const closeButtons = document.querySelectorAll(".popup__close");
 const inputName = document.querySelector(".popup__item_type_name");
 const inputBio = document.querySelector(".popup__item_type_bio");
 const profileName = document.querySelector(".profile__name");
 const profileBio = document.querySelector(".profile__bio");
+const popups = document.querySelectorAll(".popup");
 
-// функция, которая открывает popup
+// функция, которая открывает popup и убирает ошибки валидации
 function openPopup(popupElement) {
+  const inputList = Array.from(popupElement.querySelectorAll(".popup__input"));
   popupElement.classList.add("popup_opened");
   document.addEventListener("keydown", closePopupByEsc);
+  inputList.forEach((inputElement) => {
+    const errorElement = popupElement.querySelector(
+      `.${inputElement.id}-error`
+    );
+    hideInputError(inputElement, errorElement);
+  });
 }
 
 // функция, которая закрывает popup
@@ -44,15 +52,14 @@ const closePopupByEsc = (event) => {
   }
 };
 
-// Закрытие попап по клику на overlay
-document.addEventListener("click", function (event) {
-  if (event.target.classList.contains("popup")) {
-    closePopup(event.target);
-  }
-});
-
-// Закрывает любую форму
-closeButtons.forEach((button) => {
-  const popup = button.closest(".popup");
-  button.addEventListener("click", () => closePopup(popup));
+// Закрытие попап по клику на крестик или overlay
+popups.forEach((popup) => {
+  popup.addEventListener("mousedown", (event) => {
+    if (event.target.classList.contains("popup_opened")) {
+      closePopup(popup);
+    }
+    if (event.target.classList.contains("popup__close")) {
+      closePopup(popup);
+    }
+  });
 });

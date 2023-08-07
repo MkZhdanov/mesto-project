@@ -8,15 +8,15 @@ import {
   handleProfileFormSubmit,
 } from "./components/modal.js";
 import { popupLocationAdd, handleFormSubmitCard } from "./components/card.js";
-import { validationConfig, enableValidation } from "./components/validate.js";
-import './pages/index.css';
+import { enableValidation } from "./components/validate.js";
+import "./pages/index.css";
 
 const profileEditButton = document.querySelector(".profile__edit");
 const addCardButton = document.querySelector(".profile__add-card");
-const formElementProfile = document.querySelector(".popup__form-profile");
-const formElementCard = document.querySelector(".popup__form-card");
+const formElementProfile = document.forms["profile"];
+const formElementCard = document.forms["form-add"];
 
-enableValidation(validationConfig);
+enableValidation();
 
 // открывает форму "Редактировать профиль" и подтягивает значения инпутов из профайла на странице
 profileEditButton.addEventListener("click", function () {
