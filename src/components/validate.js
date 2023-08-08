@@ -1,4 +1,4 @@
-export { validationConfig, enableValidation, hideInputError, disableButton };
+export { validationConfig, enableValidation, hideInputError, disableButton, };
 
 // объект со всеми данными для валидации
 const validationConfig = {
@@ -11,21 +11,21 @@ const validationConfig = {
 };
 
 // функция, которая показывает ошибку, если форма не валидна
-function showInputError(inputElement, errorElement) {
+function showInputError(inputElement, errorElement, validationConfig) {
   inputElement.classList.add(validationConfig.inputErrorClass);
   errorElement.classList.add(validationConfig.errorClass);
   errorElement.textContent = inputElement.validationMessage;
 }
 
 // функция, которая скрывает ошибку, если форма снова стала валидна
-function hideInputError(inputElement, errorElement) {
+function hideInputError(inputElement, errorElement, validationConfig) {
   inputElement.classList.remove(validationConfig.inputErrorClass);
   errorElement.classList.remove(validationConfig.errorClass);
   errorElement.textContent = "";
 }
 
 // функция, которая проверяет валидность формы
-function checkInputValidity(inputElement, formElement) {
+function checkInputValidity(inputElement, formElement, validationConfig) {
   const isInputValid = inputElement.validity.valid;
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
   // проверка на соответствие паттерну из инпут поля и вывод кастомной ошибки из дата аттрибута инпута
@@ -35,9 +35,9 @@ function checkInputValidity(inputElement, formElement) {
     inputElement.setCustomValidity("");
   }
   if (!isInputValid) {
-    showInputError(inputElement, errorElement);
+    showInputError(inputElement, errorElement, validationConfig);
   } else {
-    hideInputError(inputElement, errorElement);
+    hideInputError(inputElement, errorElement, validationConfig);
   }
 }
 
@@ -64,7 +64,7 @@ function disableButton(buttonElement) {
 }
 
 // функция ищет инпуты внутри каждой формы, перебирает список инпутов и вешает обработчик событий input на каждый инпут
-function setEventListener(formElement) {
+function setEventListener(formElement, validationConfig) {
   const inputList = Array.from(
     formElement.querySelectorAll(validationConfig.inputSelector)
   );
@@ -77,18 +77,18 @@ function setEventListener(formElement) {
   });
   inputList.forEach((inputElement) => {
     inputElement.addEventListener("input", () => {
-      checkInputValidity(inputElement, formElement);
+      checkInputValidity(inputElement, formElement, validationConfig);
       toggleButtonState(inputList, buttonElement);
     });
   });
 }
 
 // функция, которая включает валидацию
-function enableValidation() {
+function enableValidation(validationConfig) {
   const formsList = Array.from(
     document.querySelectorAll(validationConfig.formSelector)
   );
   formsList.forEach((formElement) => {
-    setEventListener(formElement);
+    setEventListener(formElement, validationConfig);
   });
 }

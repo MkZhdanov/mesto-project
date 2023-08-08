@@ -8,7 +8,6 @@ export {
   closePopup,
   handleProfileFormSubmit,
 };
-import { hideInputError } from "./validate.js";
 
 const popupEditProfile = document.querySelector(".popup_type_edit-profile");
 const inputName = document.querySelector(".popup__item_type_name");
@@ -19,15 +18,8 @@ const popups = document.querySelectorAll(".popup");
 
 // функция, которая открывает popup и убирает ошибки валидации
 function openPopup(popupElement) {
-  const inputList = Array.from(popupElement.querySelectorAll(".popup__input"));
   popupElement.classList.add("popup_opened");
   document.addEventListener("keydown", closePopupByEsc);
-  inputList.forEach((inputElement) => {
-    const errorElement = popupElement.querySelector(
-      `.${inputElement.id}-error`
-    );
-    hideInputError(inputElement, errorElement);
-  });
 }
 
 // функция, которая закрывает popup
