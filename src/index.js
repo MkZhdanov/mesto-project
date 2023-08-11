@@ -15,10 +15,10 @@ import "./pages/index.css";
 
 const profileEditButton = document.querySelector(".profile__edit");
 const addCardButton = document.querySelector(".profile__add-card");
-const avatarButton = document.querySelector(".profile__avatar-button")
+const avatarButton = document.querySelector(".profile__avatar-button");
 const formElementProfile = document.forms["profile"];
 const formElementCard = document.forms["form-add"];
-const formElementAvatar = document.forms["avatar-edit"]
+const formElementAvatar = document.forms["avatar-edit"];
 
 enableValidation(validationConfig);
 
@@ -37,7 +37,7 @@ addCardButton.addEventListener("click", function () {
 // Открывает форму смены аватара
 avatarButton.addEventListener("click", function () {
   openPopup(popupAvatarChange);
-})
+});
 
 // Слушатель кнопки "Сохранить" в форме "Редактировать профиль"
 formElementProfile.addEventListener("submit", handleProfileFormSubmit);

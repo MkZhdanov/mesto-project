@@ -1,4 +1,4 @@
-import { openPopup, closePopup, renderLoading } from "./modal.js";
+import { openPopup, closePopup, renderLoading, userId } from "./modal.js";
 import { setLike, unsetLike, addNewCard, deleteCard } from "./api.js";
 export { popupLocationAdd, handleFormSubmitCard, renderCards };
 
@@ -10,32 +10,31 @@ const imgBigCaption = document.querySelector(".image-popup__title");
 const popupLocationAdd = document.querySelector(".popup_type_add-card");
 const popupImage = document.querySelector(".popup_type_image");
 
-
 // Функция, которая создает карточку на странице со значениями инпутов формы "Новое место" закрывает попап и очишает значения инпутов
 function handleFormSubmitCard(evt) {
   const cardFromForm = {
     likes: [],
-    _id: '',
+    _id: "",
     name: `${title.value}`,
     link: `${img.value}`,
     owner: {
-      _id: 'bee55201bf9a9e7ce07379b4',
-    }
-  }
+      _id: userId,
+    },
+  };
   evt.preventDefault(); // Предотвращает событие по умолчанию (перезагрузку страницы) // likes
   renderLoading(evt.submitter, true);
-  addCard(cardFromForm);
   addNewCard(title.value, img.value) // Отправляет данные на сервер
-  .then((data) => {
-    evt.target.reset();
-    closePopup(popupLocationAdd);
-  })
-  .catch((err) => {
-    console.log(err);
-  })
-  .finally(() => {
-    renderLoading(evt.submitter, false);
-  })
+    .then((data) => {
+      addCard(cardFromForm);
+      evt.target.reset();
+      closePopup(popupLocationAdd);
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(() => {
+      renderLoading(evt.submitter, false);
+    });
 }
 
 // Функция, которая создает карточку
@@ -54,23 +53,24 @@ function createCard(element) {
   cardImage.setAttribute("alt", element.name);
 
   element.likes.forEach((i) => {
-    if (i._id === storage.userId) {
-      likeButton.classList.add('card__like_active');
+    if (i._id === userId) {
+      likeButton.classList.add("card__like_active");
     }
   });
   // Добавляет/Удаляет лайки
   cardElement
     .querySelector(".card__like")
     .addEventListener("click", function (evt) {
-      toggleLikeButton(evt.target, likesCount, element._id)
+      toggleLikeButton(evt.target, likesCount, element._id);
     });
-// Проверяет соответствие id пользователя
-  if(element.owner._id != storage.userId) cardDeleteButton.classList.add('card__delete_hide');
-    // Удаляет карточку
+  // Проверяет соответствие id пользователя
+  if (element.owner._id != userId)
+    cardDeleteButton.classList.add("card__delete_hide");
+  // Удаляет карточку
   cardDeleteButton.addEventListener("click", function () {
     deleteCard(element._id);
     cardElement.remove();
-    });
+  });
   // Открывает попап с изображением и подписью
   cardImage.addEventListener("click", function () {
     openPopup(popupImage);
@@ -88,12 +88,6 @@ function addCard(titleValue, imgValue, likes, ownerId) {
   cardsContainer.prepend(cardElement);
 }
 
-
-const storage = {
-    userId: 'bee55201bf9a9e7ce07379b4',
-};
-
-
 function renderCards(cards) {
   cards.forEach((element) => {
     cardsContainer.prepend(createCard(element));
@@ -101,26 +95,25 @@ function renderCards(cards) {
 }
 
 function toggleLikeButton(target, count, id) {
-  if (target.classList.contains('card__like_active')) {
+  if (target.classList.contains("card__like_active")) {
     unsetLike(id, count)
       .then((item) => {
-        console.log(item.likes.length)
+        console.log(item.likes.length);
         count.textContent = item.likes.length;
-        target.classList.remove('card__like_active');
+        target.classList.remove("card__like_active");
       })
       .catch((err) => {
         console.log(err);
-      })
-  }
-  else {
+      });
+  } else {
     setLike(id, count)
       .then((item) => {
-        console.log(item.likes.length)
+        console.log(item.likes.length);
         count.textContent = item.likes.length;
-        target.classList.add('card__like_active');
+        target.classList.add("card__like_active");
       })
       .catch((err) => {
         console.log(err);
-      })
+      });
   }
 }

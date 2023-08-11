@@ -1,4 +1,4 @@
-export { validationConfig, enableValidation, hideInputError, disableButton, };
+export { validationConfig, enableValidation, hideInputError, disableButton };
 
 // объект со всеми данными для валидации
 const validationConfig = {

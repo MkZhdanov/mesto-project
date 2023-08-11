@@ -11,13 +11,14 @@ export {
   handleFormSubmitAvatar,
   setProfileInfo,
   renderLoading,
+  userId,
 };
-import { patchUserId, setAvatar } from "./api.js"
+import { patchUserId, setAvatar } from "./api.js";
 
 const popupEditProfile = document.querySelector(".popup_type_edit-profile");
 const popupAvatarChange = document.querySelector(".popup_type_edit-avatar");
 const inputAvatar = document.querySelector("#avatar");
-const AvatarLink = document.querySelector(".profile__avatar")
+const AvatarLink = document.querySelector(".profile__avatar");
 const inputName = document.querySelector(".popup__item_type_name");
 const inputBio = document.querySelector(".popup__item_type_bio");
 const profileName = document.querySelector(".profile__name");
@@ -43,15 +44,15 @@ function handleProfileFormSubmit(evt) {
   profileName.textContent = inputName.value;
   profileBio.textContent = inputBio.value;
   patchUserId(profileName, profileBio)
-  .then((data) => {
-    closePopup(popupEditProfile);
-  })
-  .catch((err) => {
-    console.log(err);
-  })
-  .finally(() => {
-    renderLoading(evt.submitter, false);
-  })
+    .then((data) => {
+      closePopup(popupEditProfile);
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(() => {
+      renderLoading(evt.submitter, false);
+    });
 }
 // функция меняющая аватар
 function handleFormSubmitAvatar(evt) {
@@ -68,7 +69,7 @@ function handleFormSubmitAvatar(evt) {
     })
     .finally(() => {
       renderLoading(evt.submitter, false);
-    })
+    });
 }
 
 // Закрытие попап по нажатию Esc
@@ -91,18 +92,19 @@ popups.forEach((popup) => {
   });
 });
 
+function setProfileInfo(name, about, url, id) {
+  profileName.textContent = name;
+  profileBio.textContent = about;
+  AvatarLink.src = url;
+  userId = id;
+}
 
-  function setProfileInfo(name, about, url) {
-    profileName.textContent = name;
-    profileBio.textContent = about;
-    AvatarLink.src = url;
+function renderLoading(button, isLoading) {
+  if (isLoading) {
+    button.textContent = "Сохранение...";
+  } else {
+    button.textContent = "Сохранить";
   }
+}
 
-  function renderLoading(button, isLoading) {
-    if(isLoading) {
-      button.textContent = "Сохранение...";
-    }
-    else {
-      button.textContent = "Сохранить";
-    }
-  }
+let userId;
