@@ -38,6 +38,9 @@
 @import url(../blocks/popup/input/popup__input_type_error.css);
 @import url(../blocks/popup/__button/popup__button_disabled.css);
 @import url(../blocks/popup/__error/popup__error.css);
+@import url(../blocks/card/__like/card__like-counter.css);
+@import url(../blocks/profile/__avatar/profile__avatar-button.css);
+@import url(../blocks/card/__delete/_hide/card__delete_hide.css);
 
 
 

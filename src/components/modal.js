@@ -1,5 +1,6 @@
 export {
   popupEditProfile,
+  popupAvatarChange,
   inputName,
   inputBio,
   profileName,
@@ -7,9 +8,16 @@ export {
   openPopup,
   closePopup,
   handleProfileFormSubmit,
+  handleFormSubmitAvatar,
+  setProfileInfo,
+  renderLoading,
 };
+import { patchUserId, setAvatar } from "./api.js"
 
 const popupEditProfile = document.querySelector(".popup_type_edit-profile");
+const popupAvatarChange = document.querySelector(".popup_type_edit-avatar");
+const inputAvatar = document.querySelector("#avatar");
+const AvatarLink = document.querySelector(".profile__avatar")
 const inputName = document.querySelector(".popup__item_type_name");
 const inputBio = document.querySelector(".popup__item_type_bio");
 const profileName = document.querySelector(".profile__name");
@@ -31,9 +39,36 @@ function closePopup(popup) {
 // Функция, которая сохраняет значения инпутов попапа "Редактировать профиль" в профайл на странице и закрывает попап
 function handleProfileFormSubmit(evt) {
   evt.preventDefault(); // Предотвращает событие по умолчанию (перезагрузку страницы)
+  renderLoading(evt.submitter, true);
   profileName.textContent = inputName.value;
   profileBio.textContent = inputBio.value;
-  closePopup(popupEditProfile);
+  patchUserId(profileName, profileBio)
+  .then((data) => {
+    closePopup(popupEditProfile);
+  })
+  .catch((err) => {
+    console.log(err);
+  })
+  .finally(() => {
+    renderLoading(evt.submitter, false);
+  })
+}
+// функция меняющая аватар
+function handleFormSubmitAvatar(evt) {
+  evt.preventDefault();
+  renderLoading(evt.submitter, true);
+  AvatarLink.setAttribute("src", inputAvatar.value);
+  setAvatar(inputAvatar.value)
+    .then((data) => {
+      evt.target.reset();
+      closePopup(popupAvatarChange);
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(() => {
+      renderLoading(evt.submitter, false);
+    })
 }
 
 // Закрытие попап по нажатию Esc
@@ -55,3 +90,19 @@ popups.forEach((popup) => {
     }
   });
 });
+
+
+  function setProfileInfo(name, about, url) {
+    profileName.textContent = name;
+    profileBio.textContent = about;
+    AvatarLink.src = url;
+  }
+
+  function renderLoading(button, isLoading) {
+    if(isLoading) {
+      button.textContent = "Сохранение...";
+    }
+    else {
+      button.textContent = "Сохранить";
+    }
+  }

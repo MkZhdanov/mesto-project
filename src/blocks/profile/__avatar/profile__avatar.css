@@ -1,4 +1,22 @@
 .profile__avatar {
   width: 120px;
+  height: 120px;
   border-radius: 50%;
+  background-size: cover;
+  color: transparent;
+  object-fit: cover;
+  object-position: top;
+}
+
+.profile__avatar:hover:before {
+  content: "";
+  display: block;
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  background-image: url(../../../images/Pen.svg);
+  background-size: 26px;
+  background-repeat: no-repeat;
+  background-position: 50%;
 }
