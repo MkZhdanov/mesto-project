@@ -13,18 +13,9 @@ const popupImage = document.querySelector(".popup_type_image");
 // Функция, которая создает карточку на странице со значениями инпутов формы "Новое место" закрывает попап и очишает значения инпутов
 function handleFormSubmitCard(evt) {
   function makeRequest() {
-    const cardFromForm = {
-      likes: [],
-      _id: "",
-      name: `${title.value}`,
-      link: `${img.value}`,
-      owner: {
-        _id: userId,
-      },
-    };
     return addNewCard(title.value, img.value) // Отправляет данные на сервер
       .then((data) => {
-        addCard(cardFromForm);
+        addCard(data);
         closePopup(popupLocationAdd);
       })
   }
@@ -76,8 +67,8 @@ function createCard(element) {
 }
 
 // Функция, которая добавляет карточку
-function addCard(titleValue, imgValue, likes, ownerId) {
-  const cardElement = createCard(titleValue, imgValue, likes, ownerId);
+function addCard(data) {
+  const cardElement = createCard(data);
   // Добавляет элемент в начало контейнера
   cardsContainer.prepend(cardElement);
 }
