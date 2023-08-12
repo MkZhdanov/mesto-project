@@ -10,7 +10,7 @@ export {
   handleProfileFormSubmit,
   handleFormSubmitAvatar,
   setProfileInfo,
-  renderLoading,
+  handleSubmit,
   userId,
 };
 import { patchUserId, setAvatar } from "./api.js";
@@ -37,39 +37,33 @@ function closePopup(popup) {
   document.removeEventListener("keydown", closePopupByEsc);
 }
 
-// Функция, которая сохраняет значения инпутов попапа "Редактировать профиль" в профайл на странице и закрывает попап
+// пример оптимизации обработчика сабмита формы профиля
 function handleProfileFormSubmit(evt) {
-  evt.preventDefault(); // Предотвращает событие по умолчанию (перезагрузку страницы)
-  renderLoading(evt.submitter, true);
-  profileName.textContent = inputName.value;
-  profileBio.textContent = inputBio.value;
-  patchUserId(profileName, profileBio)
-    .then((data) => {
-      closePopup(popupEditProfile);
-    })
-    .catch((err) => {
-      console.log(err);
-    })
-    .finally(() => {
-      renderLoading(evt.submitter, false);
-    });
+  // создаем функцию, которая возвращает промис, так как любой запрос возвращает его
+  function makeRequest() {
+    // вот это позволяет потом дальше продолжать цепочку `then, catch, finally`
+    return patchUserId(inputName, inputBio).then(
+      (userData) => {
+        profileName.textContent = userData.name;
+        profileBio.textContent = userData.about;
+        closePopup(popupEditProfile);
+      }
+    );
+  }
+  // вызываем универсальную функцию, передавая в нее запрос, событие и текст изменения кнопки (если нужен другой, а не `"Сохранение..."`)
+  handleSubmit(makeRequest, evt);
 }
+
 // функция меняющая аватар
 function handleFormSubmitAvatar(evt) {
-  evt.preventDefault();
-  renderLoading(evt.submitter, true);
-  AvatarLink.setAttribute("src", inputAvatar.value);
-  setAvatar(inputAvatar.value)
-    .then((data) => {
-      evt.target.reset();
-      closePopup(popupAvatarChange);
-    })
-    .catch((err) => {
-      console.log(err);
-    })
-    .finally(() => {
-      renderLoading(evt.submitter, false);
-    });
+  function makeRequest() {
+    AvatarLink.setAttribute("src", inputAvatar.value);
+    return setAvatar(inputAvatar.value)
+      .then((data) => {
+        closePopup(popupAvatarChange);
+      });
+  }
+    handleSubmit(makeRequest, evt);
 }
 
 // Закрытие попап по нажатию Esc
@@ -99,12 +93,45 @@ function setProfileInfo(name, about, url, id) {
   userId = id;
 }
 
-function renderLoading(button, isLoading) {
+let userId;
+
+// можно сделать универсальную функцию управления текстом кнопки с 3 и 4 необязательными аргументами
+function renderLoading(
+  isLoading,
+  button,
+  buttonText = "Сохранить",
+  loadingText = "Сохранение..."
+) {
   if (isLoading) {
-    button.textContent = "Сохранение...";
+    button.textContent = loadingText;
   } else {
-    button.textContent = "Сохранить";
+    button.textContent = buttonText;
   }
 }
 
-let userId;
+// можно сделать универсальную функцию, которая принимает функцию запроса, объект события и текст во время загрузки
+function handleSubmit(request, evt, loadingText = "Сохранение...") {
+  // всегда нужно предотвращать перезагрузку формы при сабмите
+  evt.preventDefault();
+
+  // универсально получаем кнопку сабмита из `evt`
+  const submitButton = evt.submitter;
+  // записываем начальный текст кнопки до вызова запроса
+  const initialText = submitButton.textContent;
+  // изменяем текст кнопки до вызова запроса
+  renderLoading(true, submitButton, initialText, loadingText);
+  request()
+    .then(() => {
+      // любую форму нужно очищать после успешного ответа от сервера
+      // а так же `reset` может запустить деактивацию кнопки сабмита (смотрите в `validate.js`)
+      evt.target.reset();
+    })
+    .catch((err) => {
+      // в каждом запросе нужно ловить ошибку
+      console.error(`Ошибка: ${err}`);
+    })
+    // в каждом запросе в `finally` нужно возвращать обратно начальный текст кнопки
+    .finally(() => {
+      renderLoading(false, submitButton, initialText);
+    });
+}

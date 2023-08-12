@@ -1,4 +1,4 @@
-import { openPopup, closePopup, renderLoading, userId } from "./modal.js";
+import { openPopup, closePopup, handleSubmit, userId } from "./modal.js";
 import { setLike, unsetLike, addNewCard, deleteCard } from "./api.js";
 export { popupLocationAdd, handleFormSubmitCard, renderCards };
 
@@ -12,29 +12,23 @@ const popupImage = document.querySelector(".popup_type_image");
 
 // Функция, которая создает карточку на странице со значениями инпутов формы "Новое место" закрывает попап и очишает значения инпутов
 function handleFormSubmitCard(evt) {
-  const cardFromForm = {
-    likes: [],
-    _id: "",
-    name: `${title.value}`,
-    link: `${img.value}`,
-    owner: {
-      _id: userId,
-    },
-  };
-  evt.preventDefault(); // Предотвращает событие по умолчанию (перезагрузку страницы) // likes
-  renderLoading(evt.submitter, true);
-  addNewCard(title.value, img.value) // Отправляет данные на сервер
-    .then((data) => {
-      addCard(cardFromForm);
-      evt.target.reset();
-      closePopup(popupLocationAdd);
-    })
-    .catch((err) => {
-      console.log(err);
-    })
-    .finally(() => {
-      renderLoading(evt.submitter, false);
-    });
+  function makeRequest() {
+    const cardFromForm = {
+      likes: [],
+      _id: "",
+      name: `${title.value}`,
+      link: `${img.value}`,
+      owner: {
+        _id: userId,
+      },
+    };
+    return addNewCard(title.value, img.value) // Отправляет данные на сервер
+      .then((data) => {
+        addCard(cardFromForm);
+        closePopup(popupLocationAdd);
+      })
+  }
+  handleSubmit(makeRequest, evt);
 }
 
 // Функция, которая создает карточку

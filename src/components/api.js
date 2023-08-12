@@ -45,13 +45,13 @@ function getUserId() {
 }
 
 // обновляет name и about в массиве с данными пользователя на сервера
-function patchUserId(profileName, profileBio) {
+function patchUserId(inputName, inputBio) {
   return request(`${config.baseUrl}/users/me`, {
     method: "PATCH",
     headers: config.headers,
     body: JSON.stringify({
-      name: profileName.textContent,
-      about: profileBio.textContent,
+      name: inputName.value,
+      about: inputBio.value,
     }),
   });
 }
