@@ -1,3 +1,6 @@
+//Подготовка к выполнению проетка
+
+
 import { openPopup, closePopup, handleSubmit, userId } from "./modal.js";
 import { setLike, unsetLike, addNewCard, deleteCard } from "./api.js";
 export { popupLocationAdd, handleFormSubmitCard, renderCards };
