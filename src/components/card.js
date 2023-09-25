@@ -1,6 +1,3 @@
-//Подготовка к выполнению проетка
-
-
 import { openPopup, closePopup, handleSubmit, userId } from "./modal.js";
 import { setLike, unsetLike, addNewCard, deleteCard } from "./api.js";
 export { popupLocationAdd, handleFormSubmitCard, renderCards };
@@ -12,6 +9,21 @@ const imgBig = document.querySelector(".image-popup__image");
 const imgBigCaption = document.querySelector(".image-popup__title");
 const popupLocationAdd = document.querySelector(".popup_type_add-card");
 const popupImage = document.querySelector(".popup_type_image");
+
+
+
+
+class Card {
+  constructor(){
+
+  }
+}
+
+
+
+
+
+
 
 // Функция, которая создает карточку на странице со значениями инпутов формы "Новое место" закрывает попап и очишает значения инпутов
 function handleFormSubmitCard(evt) {
