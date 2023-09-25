@@ -47,3 +47,23 @@ formElementCard.addEventListener("submit", handleFormSubmitCard);
 
 // Слушатель кнопки "Сохранить" в форме "Обновить аватар"
 formElementAvatar.addEventListener("submit", handleFormSubmitAvatar);
+
+/////////////////////////////////
+//инициализация api
+const api = new Api(config);
+
+//предварительный шаблон для отрисовки карточек и тд, переношу сюда из api.js
+api
+  .getData()
+  .then(([userData, cards]) => {
+    setProfileInfo(
+      userData.name,
+      userData.about,
+      userData.avatar,
+      userData._id
+    );
+    renderCards(cards);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
