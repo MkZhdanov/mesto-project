@@ -12,9 +12,9 @@ import { renderCards } from "./card.js";
 import { setProfileInfo } from "./modal.js";
 
 const config = {
-  baseUrl: "https://nomoreparties.co/v1/plus-cohort-27",
+  baseUrl: "https://nomoreparties.co/v1/plus-cohort-28",
   headers: {
-    authorization: "ddcd4d44-122e-4e36-92c8-1de7daa6b3f7",
+    authorization: "57c50817-5faf-4479-94fc-07447a268e09",
     "Content-Type": "application/json",
   },
 };
