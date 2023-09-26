@@ -13,7 +13,8 @@ export {
   handleSubmit,
   userId,
 };
-import { patchUserId, setAvatar } from "./api.js";
+//import { patchUserId, setAvatar } from "./api.js";              //валится в ошибку
+
 
 const popupEditProfile = document.querySelector(".popup_type_edit-profile");
 const popupAvatarChange = document.querySelector(".popup_type_edit-avatar");
