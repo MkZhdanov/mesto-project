@@ -15,7 +15,6 @@ export {
 };
 //import { patchUserId, setAvatar } from "./api.js";              //валится в ошибку
 
-
 const popupEditProfile = document.querySelector(".popup_type_edit-profile");
 const popupAvatarChange = document.querySelector(".popup_type_edit-avatar");
 const inputAvatar = document.querySelector("#avatar");
@@ -43,13 +42,11 @@ function handleProfileFormSubmit(evt) {
   // создаем функцию, которая возвращает промис, так как любой запрос возвращает его
   function makeRequest() {
     // вот это позволяет потом дальше продолжать цепочку `then, catch, finally`
-    return patchUserId(inputName, inputBio).then(
-      (userData) => {
-        profileName.textContent = userData.name;
-        profileBio.textContent = userData.about;
-        closePopup(popupEditProfile);
-      }
-    );
+    return patchUserId(inputName, inputBio).then((userData) => {
+      profileName.textContent = userData.name;
+      profileBio.textContent = userData.about;
+      closePopup(popupEditProfile);
+    });
   }
   // вызываем универсальную функцию, передавая в нее запрос, событие и текст изменения кнопки (если нужен другой, а не `"Сохранение..."`)
   handleSubmit(makeRequest, evt);
@@ -59,12 +56,11 @@ function handleProfileFormSubmit(evt) {
 function handleFormSubmitAvatar(evt) {
   function makeRequest() {
     AvatarLink.setAttribute("src", inputAvatar.value);
-    return setAvatar(inputAvatar.value)
-      .then((data) => {
-        closePopup(popupAvatarChange);
-      });
+    return setAvatar(inputAvatar.value).then((data) => {
+      closePopup(popupAvatarChange);
+    });
   }
-    handleSubmit(makeRequest, evt);
+  handleSubmit(makeRequest, evt);
 }
 
 // Закрытие попап по нажатию Esc

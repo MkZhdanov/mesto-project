@@ -8,20 +8,16 @@ import {
   openPopup,
   handleProfileFormSubmit,
   handleFormSubmitAvatar,
-  setProfileInfo                    //его небыло в импорте, добавил чтоб в ошибку не валился
+  setProfileInfo, //его небыло в импорте, добавил чтоб в ошибку не валился
 } from "../components/modal.js";
 //import { popupLocationAdd, handleFormSubmitCard } from "../components/card.js";   убрал метод handleFormSubmitCard теперь он в классе
-import { popupLocationAdd } from "../components/card.js";
+//import { popupLocationAdd } from "../components/card.js";
 import { enableValidation, validationConfig } from "../components/validate.js";
 import "./index.css";
 import Api from "../components/api.js";
 import Card from "../components/card.js";
 import { config } from "../utils/constants.js";
-
-/////////////////////////////////
-//инициализация классов
-const card = new Card();
-
+import Section from "../components/section.js";
 
 const profileEditButton = document.querySelector(".profile__edit");
 const addCardButton = document.querySelector(".profile__add-card");
@@ -29,6 +25,7 @@ const avatarButton = document.querySelector(".profile__avatar-button");
 const formElementProfile = document.forms["profile"];
 const formElementCard = document.forms["form-add"];
 const formElementAvatar = document.forms["avatar-edit"];
+const popupLocationAdd = document.querySelector(".popup_type_add-card");
 
 enableValidation(validationConfig);
 
@@ -53,7 +50,7 @@ avatarButton.addEventListener("click", function () {
 formElementProfile.addEventListener("submit", handleProfileFormSubmit);
 
 // Слушатель кнопки "Создать" в форме "Новое место"
-formElementCard.addEventListener("submit", card.handleFormSubmitCard);
+//formElementCard.addEventListener("submit", card.handleFormSubmitCard);
 
 // Слушатель кнопки "Сохранить" в форме "Обновить аватар"
 formElementAvatar.addEventListener("submit", handleFormSubmitAvatar);
@@ -62,18 +59,76 @@ formElementAvatar.addEventListener("submit", handleFormSubmitAvatar);
 //инициализация api
 const api = new Api(config);
 
+//создание класса для рендера карточек
+const cardSection = new Section(
+  {
+    renderer: (item) => {
+      const newCard = renderCard(item);
+      cardSection.addItem(newCard);
+    },
+  },
+  ".elements"
+);
+
+let userId;
 //предварительный шаблон для отрисовки карточек и тд, переношу сюда из api.js
 api
   .getData()
   .then(([userData, cards]) => {
+    console.log(userData);
+    console.log(cards);
     setProfileInfo(
+      //позже исправить
       userData.name,
       userData.about,
       userData.avatar,
       userData._id
     );
-    card.renderCards(cards);
+    userId = userData._id;
+    cardSection.render(cards);
   })
   .catch((err) => {
     console.log(err);
   });
+
+/////
+function renderCard(data) {
+  const card = new Card(
+    data,
+    userId,
+    "#card-template",
+    handleCardClick,
+    handleDeleteClick,
+    handleAddLike,
+    handleRemoveLike
+  );
+  return card.createCard();
+}
+
+function handleCardClick() {}
+
+function handleDeleteClick() {}
+
+function handleRemoveLike(card) {
+  api
+    .unsetLike(card.getId())
+    .then((item) => {
+      console.log(111);
+      card.setLikes(item);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+function handleAddLike(card) {
+  api
+    .setLike(card.getId())
+    .then((item) => {
+      console.log(222);
+      card.setLikes(item);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}

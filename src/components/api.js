@@ -3,7 +3,7 @@ export default class Api {
     this._url = config.baseUrl;
     this._headers = config.headers;
   }
-
+  // проверяем ответ от сервера на корректность, если ошибка отклоняем промис
   _checkResponse(res) {
     if (res.ok) {
       return res.json();
