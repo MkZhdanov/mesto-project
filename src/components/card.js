@@ -21,6 +21,7 @@ export default class Card {
     this._handleRemoveLike = handleRemoveLike;
   }
 
+  // копируем выбранный template
   _getTemplate() {
     return document
       .querySelector(this._templateSelector)
@@ -55,6 +56,7 @@ export default class Card {
     });
   }
 
+  //передает Id карточки
   getId() {
     return this._cardId;
   }

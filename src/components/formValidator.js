@@ -15,10 +15,12 @@ export default class FormValidator {
     );
   }
 
+  // функция, которая включает валидацию
   enableValidation() {
     this._setInputEventListeners();
   }
 
+  // функция ищет инпуты внутри каждой формы, перебирает список инпутов и вешает обработчик событий input на каждый инпут
   _setInputEventListeners() {
     this.toggleButtonState();
     this._inputList.forEach((inputElement) => {
@@ -47,6 +49,7 @@ export default class FormValidator {
     });
   }
 
+  // функция, которая проверяет валидность формы
   _checkInputValidity(inputElement) {
     if (inputElement.validity.patternMismatch) {
       inputElement.setCustomValidity(inputElement.dataset.errorMessage);
@@ -80,6 +83,7 @@ export default class FormValidator {
     errorElement.textContent = "";
   }
 
+  // функция, которая сбрасывает валидацию
   resetFormValidity() {
     this._inputList.forEach((inputElement) => {
       this._hideInputError(inputElement);

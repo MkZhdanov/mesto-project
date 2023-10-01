@@ -1,25 +1,26 @@
 import "./index.css";
 import Api from "../components/api.js";
 import Card from "../components/card.js";
-import Popup from "../components/popup.js";
 import PopupWithImage from "../components/PopupWithImage.js";
 import PopupWithForm from "../components/popupWithForm";
 import Section from "../components/section.js";
 import UserInfo from "../components/UserInfo";
 import FormValidator from "../components/formValidator";
-import { config, validationConfig } from "../utils/constants.js";
+import {
+  config,
+  validationConfig,
+  profileEditButton,
+  addCardButton,
+  avatarButton,
+  avatar,
+  profileName,
+  profileAbout,
+  inputName,
+  inputAbout,
+  AvatarLink,
+} from "../utils/constants.js";
 
 ///////////////////////////////////////////////////////////////////////////
-const profileEditButton = document.querySelector(".profile__edit");
-const addCardButton = document.querySelector(".profile__add-card");
-const avatarButton = document.querySelector(".profile__avatar-button");
-const avatar = document.querySelector(".profile__avatar");
-const profileName = document.querySelector(".profile__name");
-const profileAbout = document.querySelector(".profile__bio");
-const inputName = document.querySelector(".popup__item_type_name");
-const inputAbout = document.querySelector(".popup__item_type_bio");
-const AvatarLink = document.querySelector(".profile__avatar");
-//////////////////////////////////////////////////////////////////////////
 
 const userInfo = new UserInfo({
   userNameSelector: profileName,
@@ -28,6 +29,7 @@ const userInfo = new UserInfo({
 
 const popupWithImage = new PopupWithImage(".popup_type_image");
 
+// создание класса для попапа смены аватара
 const popupWithFormAvatar = new PopupWithForm(
   ".popup_type_edit-avatar",
   (data) => {
@@ -47,6 +49,7 @@ const popupWithFormAvatar = new PopupWithForm(
   }
 );
 
+// создание класса для попапа редактирования профиля
 const popupWithFormEdit = new PopupWithForm(
   ".popup_type_edit-profile",
   (data) => {
@@ -67,6 +70,7 @@ const popupWithFormEdit = new PopupWithForm(
   }
 );
 
+// создание класса для попапа добаления карточки
 const popupWithFormAdd = new PopupWithForm(".popup_type_add-card", (data) => {
   popupWithFormAdd.loading(true);
   api
@@ -84,9 +88,6 @@ const popupWithFormAdd = new PopupWithForm(".popup_type_add-card", (data) => {
     });
 });
 
-//инициализация api
-const api = new Api(config);
-
 //создание класса для рендера карточек
 const cardSection = new Section(
   {
@@ -101,7 +102,10 @@ const cardSection = new Section(
 // объявляем айди пользователя
 let userId;
 
-// шаблон для отрисовки карточек и тд
+//инициализация api
+const api = new Api(config);
+
+// получем данные пользователя и объект с карточками => рендерим карточки и устананавливает инфо о пользователе
 api
   .getData()
   .then(([userData, cards]) => {
@@ -163,6 +167,11 @@ function handleAddLike(card) {
     });
 }
 
+// обработчики событий для кнопок открытия попапов
+avatarButton.addEventListener("click", openAvatarForm);
+addCardButton.addEventListener("click", openAddForm);
+profileEditButton.addEventListener("click", openEditForm);
+
 function openEditForm() {
   popupWithFormEdit.open();
   editProfileValidator.resetFormValidity();
@@ -181,30 +190,27 @@ function openAvatarForm() {
   editAvatarValidator.resetFormValidity();
 }
 
-//
-avatarButton.addEventListener("click", openAvatarForm);
-addCardButton.addEventListener("click", openAddForm);
-profileEditButton.addEventListener("click", openEditForm);
 // добавляем листенеры
 popupWithImage.setEventListeners();
 popupWithFormEdit.setEventListeners();
 popupWithFormAdd.setEventListeners();
 popupWithFormAvatar.setEventListeners();
 
+// подключаем и включаем валидаторы
 const editProfileValidator = new FormValidator(
-  popupWithFormEdit._formElement,
+  popupWithFormEdit.formElement,
   validationConfig
 );
 editProfileValidator.enableValidation();
 
 const addCardValidator = new FormValidator(
-  popupWithFormAdd._formElement,
+  popupWithFormAdd.formElement,
   validationConfig
 );
 addCardValidator.enableValidation();
 
 const editAvatarValidator = new FormValidator(
-  popupWithFormAvatar._formElement,
+  popupWithFormAvatar.formElement,
   validationConfig
 );
 editAvatarValidator.enableValidation();
