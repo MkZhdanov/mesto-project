@@ -6,7 +6,8 @@ import PopupWithImage from "../components/PopupWithImage.js";
 import PopupWithForm from "../components/popupWithForm";
 import Section from "../components/section.js";
 import UserInfo from "../components/UserInfo";
-import { config } from "../utils/constants.js";
+import FormValidator from "../components/formValidator";
+import { config, validationConfig } from "../utils/constants.js";
 
 ///////////////////////////////////////////////////////////////////////////
 const profileEditButton = document.querySelector(".profile__edit");
@@ -164,6 +165,7 @@ function handleAddLike(card) {
 
 function openEditForm() {
   popupWithFormEdit.open();
+  editProfileValidator.resetFormValidity();
   const userData = userInfo.getUserInfo();
   inputName.value = userData.name;
   inputAbout.value = userData.about;
@@ -171,10 +173,12 @@ function openEditForm() {
 
 function openAddForm() {
   popupWithFormAdd.open();
+  addCardValidator.resetFormValidity();
 }
 
 function openAvatarForm() {
   popupWithFormAvatar.open();
+  editAvatarValidator.resetFormValidity();
 }
 
 //
@@ -186,3 +190,21 @@ popupWithImage.setEventListeners();
 popupWithFormEdit.setEventListeners();
 popupWithFormAdd.setEventListeners();
 popupWithFormAvatar.setEventListeners();
+
+const editProfileValidator = new FormValidator(
+  popupWithFormEdit._formElement,
+  validationConfig
+);
+editProfileValidator.enableValidation();
+
+const addCardValidator = new FormValidator(
+  popupWithFormAdd._formElement,
+  validationConfig
+);
+addCardValidator.enableValidation();
+
+const editAvatarValidator = new FormValidator(
+  popupWithFormAvatar._formElement,
+  validationConfig
+);
+editAvatarValidator.enableValidation();
