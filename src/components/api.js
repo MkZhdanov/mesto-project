@@ -40,8 +40,8 @@ export default class Api {
       method: "PATCH",
       headers: this._headers,
       body: JSON.stringify({
-        name: inputName.value,
-        about: inputBio.value,
+        name: inputName,
+        about: inputBio,
       }),
     });
   }

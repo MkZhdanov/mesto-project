@@ -42,11 +42,8 @@ export default class Card {
   _setEventListeners() {
     this._likeButtonElement.addEventListener("click", () => {
       if (this._likeButtonElement.classList.contains("card__like_active")) {
-        console.log("dislike");
         this._handleRemoveLike(this);
       } else {
-        console.log("like");
-        console.log(this._cardId);
         this._handleAddLike(this);
       }
     });
@@ -82,6 +79,10 @@ export default class Card {
     this._setEventListeners();
 
     return this._element;
+  }
+
+  remove() {
+    this._element.remove();
   }
 
   setLikes(item) {
