@@ -1,118 +1,95 @@
-export {
-  getInitialCards,
-  getUserId,
-  patchUserId,
-  addNewCard,
-  setAvatar,
-  deleteCard,
-  setLike,
-  unsetLike,
-};
-import { renderCards } from "./card.js";
-import { setProfileInfo } from "./modal.js";
-
-const config = {
-  baseUrl: "https://nomoreparties.co/v1/plus-cohort-27",
-  headers: {
-    authorization: "ddcd4d44-122e-4e36-92c8-1de7daa6b3f7",
-    "Content-Type": "application/json",
-  },
-};
-
-const checkResponse = (res) => {
-  if (res.ok) {
-    return res.json();
+export default class Api {
+  constructor(config) {
+    this._url = config.baseUrl;
+    this._headers = config.headers;
   }
-  return Promise.reject(`Ошибка: ${res.status}`);
-};
+  // проверяем ответ от сервера на корректность, если ошибка отклоняем промис
+  _checkResponse(res) {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Ошибка: ${res.status}`);
+  }
 
-function request(url, options) {
-  return fetch(url, options).then(checkResponse);
+  _request(url, options) {
+    return fetch(url, options).then(this._checkResponse);
+  }
+
+  // получаем массив с карточками с сервера
+  _getInitialCards() {
+    return this._request(`${this._url}/cards`, {
+      headers: this._headers,
+    });
+  }
+
+  // получаем массив с данными пользователя
+  _getUserId() {
+    return this._request(`${this._url}/users/me`, {
+      headers: this._headers,
+    });
+  }
+
+  // получаем данные пользователя и карточки
+  getData() {
+    return Promise.all([this._getUserId(), this._getInitialCards()]);
+  }
+
+  // обновляет name и about в массиве с данными пользователя на сервера
+  patchUserId(inputName, inputBio) {
+    return this._request(`${this._url}/users/me`, {
+      method: "PATCH",
+      headers: this._headers,
+      body: JSON.stringify({
+        name: inputName,
+        about: inputBio,
+      }),
+    });
+  }
+
+  //добавляет новую карточку на сервер
+  addNewCard(titleValue, imgValue) {
+    return this._request(`${this._url}/cards`, {
+      method: "POST",
+      headers: this._headers,
+      body: JSON.stringify({
+        name: titleValue,
+        link: imgValue,
+      }),
+    });
+  }
+
+  //удаляет карточку с сервера
+  deleteCard(cardId) {
+    return this._request(`${this._url}/cards/${cardId}`, {
+      method: "DELETE",
+      headers: this._headers,
+    });
+  }
+
+  // Смена аватара
+  setAvatar(inputAvatar) {
+    return this._request(`${this._url}/users/me/avatar`, {
+      method: "PATCH",
+      headers: this._headers,
+      body: JSON.stringify({
+        avatar: inputAvatar,
+      }),
+    });
+  }
+
+  // Поставить лайк
+  setLike(cardId) {
+    return this._request(`${this._url}/cards/likes/${cardId}`, {
+      method: "PUT",
+      headers: this._headers,
+    });
+  }
+
+  // Удалить лайк
+  unsetLike(cardId) {
+    return this._request(`${this._url}/cards/likes/${cardId}`, {
+      method: "DELETE",
+      headers: this._headers,
+    });
+  }
 }
-
-// получаем массив с карточками с сервера
-function getInitialCards() {
-  return request(`${config.baseUrl}/cards`, {
-    headers: config.headers,
-  });
-}
-
-//получаем массив с данными пользователя
-function getUserId() {
-  return request(`${config.baseUrl}/users/me`, {
-    headers: config.headers,
-  });
-}
-
-// обновляет name и about в массиве с данными пользователя на сервера
-function patchUserId(inputName, inputBio) {
-  return request(`${config.baseUrl}/users/me`, {
-    method: "PATCH",
-    headers: config.headers,
-    body: JSON.stringify({
-      name: inputName.value,
-      about: inputBio.value,
-    }),
-  });
-}
-
-//добавляет новую карточку на сервер
-function addNewCard(titleValue, imgValue) {
-  return request(`${config.baseUrl}/cards`, {
-    method: "POST",
-    headers: config.headers,
-    body: JSON.stringify({
-      name: titleValue,
-      link: imgValue,
-    }),
-  });
-}
-
-//удаляет карточку с сервера
-function deleteCard(cardId) {
-  return request(`${config.baseUrl}/cards/${cardId}`, {
-    method: "DELETE",
-    headers: config.headers,
-  });
-}
-
-// Смена аватара
-function setAvatar(inputAvatar) {
-  return request(`${config.baseUrl}/users/me/avatar`, {
-    method: "PATCH",
-    headers: config.headers,
-    body: JSON.stringify({
-      avatar: inputAvatar,
-    }),
-  });
-}
-
-// Поставить лайк
-function setLike(cardId) {
-  return request(`${config.baseUrl}/cards/likes/${cardId}`, {
-    method: "PUT",
-    headers: config.headers,
-  });
-}
-
-// Удалить лайк
-function unsetLike(cardId) {
-  return request(`${config.baseUrl}/cards/likes/${cardId}`, {
-    method: "DELETE",
-    headers: config.headers,
-  });
-}
-
-Promise.all([getUserId(), getInitialCards()])
-  .then(([userData, cards]) => {
-    setProfileInfo(
-      userData.name,
-      userData.about,
-      userData.avatar,
-      userData._id
-    );
-    renderCards(cards);
-  })
-  .catch((err) => {
-    console.log(err);
-  });
