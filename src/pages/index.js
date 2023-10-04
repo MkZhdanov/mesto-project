@@ -1,10 +1,10 @@
 import "./index.css";
 import Api from "../components/api.js";
 import Card from "../components/card.js";
-import PopupWithImage from "../components/PopupWithImage.js";
+import PopupWithImage from "../components/popupWithImage.js";
 import PopupWithForm from "../components/popupWithForm";
 import Section from "../components/section.js";
-import UserInfo from "../components/UserInfo";
+import UserInfo from "../components/userInfo";
 import FormValidator from "../components/formValidator";
 import {
   config,
@@ -25,6 +25,7 @@ import {
 const userInfo = new UserInfo({
   userNameSelector: profileName,
   userAboutSelector: profileAbout,
+  userAvatarSelector: avatar,
 });
 
 const popupWithImage = new PopupWithImage(".popup_type_image");
@@ -37,7 +38,7 @@ const popupWithFormAvatar = new PopupWithForm(
     api
       .setAvatar(data.avatar)
       .then((data) => {
-        avatar.src = data.avatar;
+        userInfo.setUserInfo(data);
         popupWithFormAvatar.close();
       })
       .catch((err) => {
@@ -57,7 +58,6 @@ const popupWithFormEdit = new PopupWithForm(
     api
       .patchUserId(data.name, data.bio)
       .then((data) => {
-        console.log(data);
         userInfo.setUserInfo(data);
         popupWithFormEdit.close();
       })
@@ -109,7 +109,6 @@ const api = new Api(config);
 api
   .getData()
   .then(([userData, cards]) => {
-    AvatarLink.src = userData.avatar;
     userInfo.setUserInfo(userData);
     userId = userData._id;
     cardSection.render(cards);
